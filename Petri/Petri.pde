@@ -11,7 +11,7 @@ void setup () {
   size(900, 700);
   pelletsExtant = true;
   a = new AgentPopulation(5);
-  p = new PelletPopulation(30);
+  p = new PelletPopulation(50);
 }
 
 

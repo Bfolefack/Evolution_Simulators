@@ -1,7 +1,7 @@
 class Agent {
   PVector pos, vel, acc, steer;
   PVector seekPoint = new PVector(0, 0);
-  float maxSpeed, maxForce, r, senseDist;
+  float maxSpeed, maxForce, r, senseDist, energyCost;
   int frames, energy;
   boolean arrived, alive, initiated;
 
@@ -19,12 +19,22 @@ class Agent {
     alive = true;
     arrived = false;
     initiated = false;
+    energyCost = (pow(maxSpeed/2, 2) + (senseDist/400))/1.25;
+    if (maxSpeed < 0){
+     maxSpeed = 0; 
+    }
+    if (maxForce < 0){
+     maxForce = 0; 
+    }
+    if (senseDist < 0){
+     senseDist = 0; 
+    }
   }
 
   void update() {
       frames++;
       addForce(seekNearestPellet(p));
-      addForce(avoidEdges().mult(10));
+      addForce(avoidEdges().mult(100));
       vel.add(acc);
       vel.limit(maxSpeed);
       pos.add(vel);
@@ -32,10 +42,10 @@ class Agent {
     }
   
   void calculate(Agent[] agents) {
-    if (energy < 1 /*&& initiated*/){
+    if (energy < energyCost /*&& initiated*/){
       alive = false;
       population--;
-    } else if (energy > 2){
+    } else if (energy > energyCost * 2){
       if (currentAgent < 200){
         agents[currentAgent] = new Agent(pos.x, pos.y, maxSpeed + random(-0.2, 0.2), maxForce + random(-0.05, 0.05), senseDist + random(-10, 10));
         currentAgent++;
@@ -66,8 +76,8 @@ class Agent {
 
     beginShape();
     vertex(0, -r*2);
-    vertex(-r, r*2);
-    vertex(r, r*2);
+    vertex(-r, r * 2 * maxSpeed/2);
+    vertex(r, r * 2 * maxSpeed/2);
     endShape(CLOSE);
     popMatrix();
     pop();
@@ -118,7 +128,7 @@ class Agent {
     PVector nearestPellet = new PVector(INF, INF);
     
     if(dist(pos.x, pos.y, mouseX, mouseY) < 20){
-      println("[" + maxSpeed + "][" + maxForce + "][" + senseDist + "]");
+      println("[" + maxSpeed + "][" + maxForce + "][" + senseDist + "][" + energyCost + "]");
       println(maxSpeed * 50, maxForce * 1000, senseDist);
     }
     
