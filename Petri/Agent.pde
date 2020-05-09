@@ -52,7 +52,7 @@ class Agent {
       } else {
         for (int i = 0; i < 200; i++){
           if (!agents[i].alive){
-            agents[i] = new Agent(pos.x, pos.y, maxSpeed + random(-0.2, 0.2), maxForce + random(-0.05, 0.05), senseDist + random(-10, 10));
+            agents[i] = new Agent(pos.x + random(-50, 50), pos.y + random(-50, 50), maxSpeed + random(-0.2, 0.2), maxForce + random(-0.05, 0.05), senseDist + random(-10, 10));
           }
         }
       }
